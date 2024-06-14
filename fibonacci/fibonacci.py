@@ -1,4 +1,4 @@
-#!/user/local/bin/python3
+#!/usr/bin/python3
 def fibonacci(limite, numeros=(0, 1)):
     return numeros if len(numeros) == limite else \
         fibonacci(limite, numeros + (sum(numeros[-2:]),))
