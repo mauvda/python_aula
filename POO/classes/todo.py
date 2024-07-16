@@ -2,6 +2,10 @@
 from datetime import datetime, timedelta
 
 
+class TarefaNaoEncontrada(Exception):
+    pass
+
+
 class Projeto:
     def __init__(self, nome):
         self.nome = nome
@@ -32,8 +36,11 @@ class Projeto:
         return [tarefa for tarefa in self.tarefas if not tarefa.feito]
 
     def procurar(self, descricao):
-        return [tarefa for tarefa in self.tarefas
-                if tarefa.descricao == descricao][0]
+        try:
+            return [tarefa for tarefa in self.tarefas
+                    if tarefa.descricao == descricao][0]
+        except IndexError as e:
+            raise TarefaNaoEncontrada(str(e))
 
     def __str__(self):
         return f'{self.nome} ({len(self.pendentes())} tarefa(s) pendente(s))'
@@ -85,6 +92,11 @@ def main():
     casa += TarefaRecorrente('Trocar lençóis', datetime.now(), 7)
     casa.procurar('Trocar lençóis').concluir()
     print(casa)
+
+    try:
+        casa.procurar('teste de erro')
+    except TarefaNaoEncontrada as e:
+        print(f'A causa foi "{str(e)}"!')
 
     casa.procurar('Lavar Prato').concluir()
     for tarefa in casa:
